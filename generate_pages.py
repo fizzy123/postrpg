@@ -25,6 +25,7 @@ for row in sheet["feed"]["entry"]:
     args = {
       "description": row["gsx$description"]["$t"],
       "id": row["gsx$name"]["$t"].replace(" ", "_").lower(),
+      "name": row["gsx$name"]["$t"],
       "tags": row["gsx$tags"]["$t"].split(','),
       "weight": int(row["gsx$weight"]["$t"] or 0),
     }
