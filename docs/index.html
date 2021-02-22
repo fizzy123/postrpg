@@ -62,7 +62,8 @@
           encounters = (await fetch("/encounters.json")).json()
           elements = (await fetch("/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
-          console.log(encounter)
+          console.log(encounters)
+          console.log(encounters.length)
           var encounterHTML = encounter.description.interpolate()
           window.getDocumentById("encounter").html = encounterHTML
 
