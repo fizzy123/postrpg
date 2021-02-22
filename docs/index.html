@@ -45,6 +45,7 @@
         var situations;
         var elements;
         function queryElements(tags) {
+          console.log(1)
           var matches = []
           for (element of elements) {
             match = true
@@ -65,9 +66,9 @@
           encounters = await (await fetch("/encounters.json")).json()
           elements = await (await fetch("/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
-          console.log(encounters)
-          console.log(encounters.length)
+          console.log(encounter.description)
           var encounterHTML = encounter.description.interpolate()
+          console.log(encounterHTML)
           document.getElementById("encounter").html = encounterHTML
 
           state = window.localStorage.state
