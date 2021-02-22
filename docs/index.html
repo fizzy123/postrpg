@@ -68,7 +68,7 @@
           console.log(encounters)
           console.log(encounters.length)
           var encounterHTML = encounter.description.interpolate()
-          window.getDocumentById("encounter").html = encounterHTML
+          document.getDocumentById("encounter").html = encounterHTML
 
           state = window.localStorage.state
           // State Schema
