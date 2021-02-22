@@ -59,11 +59,11 @@
           return `<a href="./${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
-          situations = (await fetch("/situations.json")).json()
+          encounters = (await fetch("/encounters.json")).json()
           elements = (await fetch("/elements.json")).json()
-          var situation = situations[Math.floor(situations.length * Math.random())] 
-          var situationHTML = situation.description.interpolate()
-          window.getDocumentById("situation").html = situationHTML
+          var encounter = encounters[Math.floor(encounters.length * Math.random())] 
+          var encounterHTML = encounter.description.interpolate()
+          window.getDocumentById("encounter").html = encounterHTML
 
           state = window.localStorage.state
           // State Schema
@@ -98,7 +98,7 @@
     <div>
       You encounter
     </div>
-    <div id="situation">
+    <div id="encounter">
     </div>
   </body>
 </html>
