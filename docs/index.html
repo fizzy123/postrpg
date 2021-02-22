@@ -59,8 +59,8 @@
           return `<a href="./${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
-          encounters = (await fetch("/encounters.json")).json()
-          elements = (await fetch("/elements.json")).json()
+          encounters = await (await fetch("/encounters.json")).json()
+          elements = await (await fetch("/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
           console.log(encounters)
           console.log(encounters.length)
