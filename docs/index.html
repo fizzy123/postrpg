@@ -44,7 +44,7 @@
       window.addEventListener('load', function () {
         var situations;
         var elements;
-        function queryElements(tags) {
+        const queryElements = function(tags) {
           console.log(1)
           var matches = []
           for (element of elements) {
@@ -67,7 +67,7 @@
           elements = await (await fetch("/gen/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
           console.log(encounter.description)
-          var encounterHTML = encounter.description.interpolate()
+          var encounterHTML = encounter.description.interpolate({queryElements: queryElements})
           console.log(encounterHTML)
           document.getElementById("encounter").html = encounterHTML
 
