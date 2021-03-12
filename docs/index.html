@@ -49,16 +49,12 @@
           for (element of elements) {
             match = true
             for (tag of tags) {
-              console.log(element.tags, tag)
-              console.log(element.tags.indexOf(tag))
-              console.log(element.tags.indexOf(tag) === -1)
                if (element.tags.indexOf(tag) === -1) {
-                 match - false 
+                 match = false 
                  break
                }
             }
             if (match) {
-              console.log("added")
               matches.push(element)
             }
           }
