@@ -49,6 +49,8 @@
           for (element of elements) {
             match = true
             for (tag of tags) {
+              console.log(element.tags, match)
+              console.log(element.tags.indexOf(tag) < 0)
                if (element.tags.indexOf(tag) < 0) {
                  match - false 
                  break
