@@ -32,10 +32,10 @@ for row in sheet["feed"]["entry"]:
     elements.append(args)
     template = templateEnv.get_template("elements.html")
     outputText = template.render(args)
-    text_file = open("static/{}_page.html".format(args["id"]), "w")
+    text_file = open("docs/gen/{}_page.html".format(args["id"]), "w")
     text_file.write(outputText)
     text_file.close()
-with open('static/elements.json', 'w') as outfile:
+with open('docs/gen/elements.json', 'w') as outfile:
     json.dump(elements, outfile)
 
 print("encounters")
@@ -49,14 +49,12 @@ for row in sheet["feed"]["entry"]:
     args = {
       "id": row["gsx$id"]["$t"],
       "description": row["gsx$description"]["$t"],
-      "clue_trigger": row["gsx$cluetrigger"]["$t"],
-      "clue_trigger_percent": float(row["gsx$cluetriggerpercent"]["$t"] or 0),
       "trigger": row["gsx$trigger"]["$t"],
       "trigger_percent": float(row["gsx$triggerpercent"]["$t"] or 0),
       "tags": row["gsx$tags"]["$t"].split(','),
       "weight": int(row["gsx$weight"]["$t"] or 0),
     }
     encounters.append(args)
-with open('static/encounters.json', 'w') as outfile:
+with open('docs/gen/encounters.json', 'w') as outfile:
     json.dump(encounters, outfile)
 
