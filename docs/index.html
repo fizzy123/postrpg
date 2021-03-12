@@ -59,7 +59,7 @@
             }
           }
           choice = randomWeightedChoice(elements)
-          return `<a href="./${choice.id}_page.html">${choice.name}</a>`
+          return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
           encounters = await (await fetch("/gen/encounters.json")).json()
