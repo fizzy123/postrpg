@@ -49,7 +49,7 @@
           for (element of elements) {
             match = true
             for (tag of tags) {
-               if (element.tags.indexOf(tag)) {
+               if (element.tags.indexOf(tag) < 0) {
                  match - false 
                  break
                }
