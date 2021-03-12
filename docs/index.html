@@ -60,7 +60,7 @@
               matches.push(element)
             }
           }
-          choice = randomWeightedChoice(elements)
+          choice = randomWeightedChoice(matches)
           return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
