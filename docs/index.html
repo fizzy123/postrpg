@@ -67,7 +67,8 @@
           elements = await (await fetch("/gen/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
           console.log(encounter.description)
-          var encounterHTML = encounter.description.interpolate({queryElements: queryElements})
+          console.log(queryElements)
+          var encounterHTML = encounter.description.interpolate({})
           console.log(encounterHTML)
           document.getElementById("encounter").html = encounterHTML
 
