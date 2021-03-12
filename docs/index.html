@@ -51,7 +51,7 @@
             for (tag of tags) {
               console.log(element.tags, tag)
               console.log(element.tags.indexOf(tag))
-               if (element.tags.indexOf(tag) < 0) {
+               if (element.tags.indexOf(tag) === -1) {
                  match - false 
                  break
                }
