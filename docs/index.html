@@ -62,6 +62,7 @@
             }
           }
           choice = randomWeightedChoice(matches)
+          console.log(choice)
           document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><h1>${choice.name}</h1><div>${choice.description}</div></div>`
           return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
