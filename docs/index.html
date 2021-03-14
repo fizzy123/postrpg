@@ -102,7 +102,7 @@
           }
 
           // colorize links
-          const colorIndex = Math.floor(5*Math.random())
+          let colorIndex = Math.floor(5*Math.random())
           const coloredNames = document.body.querySelectorAll('.colorize');
           for (const name of coloredNames) {
             name.style.color = highlightColors[colorIndex]
