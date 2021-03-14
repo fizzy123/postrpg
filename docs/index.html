@@ -80,14 +80,14 @@
           return `<div data-id=${choice.id}>${choice.name}</div>`
         }
         var generate = async function() {
-          # generate situation
+          // generate situation
           encounters = await (await fetch("/gen/encounters.json")).json()
           elements = await (await fetch("/gen/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
           var encounterHTML = encounter.description.interpolate({ queryElements: queryElements })
           document.getElementById("encounter").innerHTML = encounterHTML
 
-          # determine triggers
+          // determine triggers
           const triggerRoll = Math.random()
           if (triggerRoll < 0.6) {
             const trigger = Math.ceil(Math.random() * triggerCount)
@@ -101,7 +101,7 @@
             document.getElementById("triggers").innerHTML = `Questlines ${trigger1} and ${trigger2} will both progress here.`
           }
 
-          # colorize links
+          // colorize links
           const colorIndex = Math.floor(5*Math.random())
           const coloredNames = document.body.querySelectorAll('.colorize');
           for (const name of coloredNames) {
