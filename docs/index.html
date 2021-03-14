@@ -58,7 +58,9 @@
             }
             if (match) {
               console.log("added")
-              matches.push(element)
+              if (element) {
+                matches.push(element)
+              }
             }
           }
           choice = randomWeightedChoice(matches)
