@@ -61,9 +61,8 @@
               }
             }
           }
-          console.log(tags)
           if (matches.length === 0) {
-            throw Error(`No matches found for these tags: %{tags}`)
+            throw Error(`No matches found for these tags: 4{tags}`)
           }
           choice = randomWeightedChoice(matches)
           document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><h1>${choice.name}</h1><div>${choice.description}</div></div>`
