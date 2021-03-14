@@ -107,7 +107,7 @@
           for (const name of coloredNames) {
             name.style.color = highlightColors[colorIndex]
             const coloredTitle = document.body.querySelectorAll(`[data-id=${name.getAttribute("data-id")}]`);
-            coloredTitle = highlightColors[colorIndex]
+            coloredTitle.style.color = highlightColors[colorIndex]
             colorIndex = colorIndex + 1
             if (colorIndex >= 5) {
               colorIndex = 0
