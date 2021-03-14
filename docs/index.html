@@ -65,7 +65,11 @@
             throw Error(`No matches found for these tags: ${tags}`)
           }
           choice = randomWeightedChoice(matches)
-          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><h1>${choice.name}</h1><div>${choice.description}</div></div>`
+          let description = choice.description
+          if (description.length === 0) {
+            description = "No description provided"
+          }
+          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><b>${choice.name}</b>${description}</div>`
           return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
@@ -118,11 +122,8 @@
     </script>
   </head>
   <body style="background-color: black;color: white;text-align: center;font-family: Arial;">
-    <div id="encounter">
-    </div>
-    <div id="description">
-    </div>
-    <div id="triggers">
-    </div>
+    <div id="encounter" style="font-size: 48px;font-weight: bold;"></div>
+    <div id="triggers"></div>
+    <div id="description"></div>
   </body>
 </html>
