@@ -42,6 +42,13 @@
       }
 
       const triggerCount = 4
+      const highlightColors = [
+        "#ef476f",
+        "#ffd166",
+        "#06d6a0",
+        "#118ab2",
+        "#073b4c"
+       ]
       window.addEventListener('load', function () {
         var situations;
         var elements;
@@ -69,16 +76,18 @@
           if (description.length === 0) {
             description = "No description provided"
           }
-          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><div>${choice.name}</din><div>${description}</div></div></n>`
-          return `<b>${choice.name}</b>`
+          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div style="padding: 10px 0px;"><div class="colorize" style="font-size:20px" data-id=${choice.id}>${choice.name}</div><div>${description}</div></div></n>`
+          return `<div data-id=${choice.id}>${choice.name}</div>`
         }
-        var generateSituation = async function() {
+        var generate = async function() {
+          # generate situation
           encounters = await (await fetch("/gen/encounters.json")).json()
           elements = await (await fetch("/gen/elements.json")).json()
           var encounter = encounters[Math.floor(encounters.length * Math.random())] 
           var encounterHTML = encounter.description.interpolate({ queryElements: queryElements })
           document.getElementById("encounter").innerHTML = encounterHTML
 
+          # determine triggers
           const triggerRoll = Math.random()
           if (triggerRoll < 0.6) {
             const trigger = Math.ceil(Math.random() * triggerCount)
@@ -90,6 +99,19 @@
             const trigger1 = Math.ceil(Math.random() * triggerCount)
             const trigger2 = Math.ceil(Math.random() * triggerCount)
             document.getElementById("triggers").innerHTML = `Questlines ${trigger1} and ${trigger2} will both progress here.`
+          }
+
+          # colorize links
+          const colorIndex = Math.floor(5*Math.random())
+          const coloredNames = document.body.querySelectorAll('.colorize');
+          for (const name of coloredNames) {
+            name.style.color = highlightColors[colorIndex]
+            const coloredTitle = document.body.querySelectorAll(`[data-id=${name.getAttribute("data-id")}]`);
+            coloredTitle = highlightColors[colorIndex]
+            colorIndex = colorIndex + 1
+            if (colorIndex >= 5) {
+              colorIndex = 0
+            }
           }
 
           state = window.localStorage.state
@@ -117,7 +139,7 @@
           }
           */
         }
-        generateSituation()
+        generate()
       })
     </script>
   </head>
