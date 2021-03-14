@@ -69,7 +69,7 @@
           if (description.length === 0) {
             description = "No description provided"
           }
-          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><b>${choice.name}</b> ${description}</div>`
+          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><b>${choice.name}</b> ${description}</div></n>`
           return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
@@ -122,7 +122,7 @@
     </script>
   </head>
   <body style="background-color: black;color: white;text-align: center;font-family: Arial;">
-    <div>
+    <div style="padding: 50px;max-width: 1200px;">
     <div id="encounter" style="font-size: 48px;font-weight: bold;"></div>
     <div id="triggers"></div>
     </div>
