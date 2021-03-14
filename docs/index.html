@@ -41,6 +41,7 @@
         }
       }
 
+      const triggerCount = 4
       window.addEventListener('load', function () {
         var situations;
         var elements;
@@ -61,6 +62,7 @@
             }
           }
           choice = randomWeightedChoice(matches)
+          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div><h1>${choice.name}</h1><div>${choice.description}</div></div>`
           return `<a href="./gen/${choice.id}_page.html">${choice.name}</a>`
         }
         var generateSituation = async function() {
@@ -70,6 +72,19 @@
           var encounterHTML = encounter.description.interpolate({ queryElements: queryElements })
           console.log(encounterHTML)
           document.getElementById("encounter").innerHTML = encounterHTML
+
+          const triggerRoll = Math.random()
+          if (triggerRoll < 0.6) {
+            const trigger = Math.ceil(Math.random() * triggerCount)
+            document.getElementById("triggers").innerHTML = `A clue for questline ${trigger} can be found here.`
+          } else if (triggerRoll > 0.3) {
+            const trigger = Math.ceil(Math.random() * triggerCount)
+            document.getElementById("triggers").innerHTML = `Questline ${trigger} can progress here.`
+          } else if (triggerRoll > 0.1) {
+            const trigger1 = Math.ceil(Math.random() * triggerCount)
+            const trigger2 = Math.ceil(Math.random() * triggerCount)
+            document.getElementById("triggers").innerHTML = `Questlines ${trigger1} and ${trigger2} will both progress here.`
+          }
 
           state = window.localStorage.state
           // State Schema
@@ -101,10 +116,11 @@
     </script>
   </head>
   <body style="background-color: black;color: white;text-align: center;font-family: Arial;">
-    <div>
-      You encounter
-    </div>
     <div id="encounter">
+    </div>
+    <div id="descriptions">
+    </div>
+    <div id="triggers">
     </div>
   </body>
 </html>
