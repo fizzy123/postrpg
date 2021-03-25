@@ -41,7 +41,7 @@
         }
       }
 
-      const triggerCount = 4
+      const triggerCount = 2
       const highlightColors = [
         "#ef476f",
         "#ffd166",
@@ -88,16 +88,16 @@
 
           // determine triggers
           const triggerRoll = Math.random()
-          if (triggerRoll < 0.6) {
-            const trigger = Math.ceil(Math.random() * triggerCount)
-            document.getElementById("triggers").innerHTML = `A clue for questline ${trigger} can be found here.`
-          } else if (triggerRoll > 0.3) {
-            const trigger = Math.ceil(Math.random() * triggerCount)
-            document.getElementById("triggers").innerHTML = `Questline ${trigger} can progress here.`
-          } else if (triggerRoll > 0.1) {
-            const trigger1 = Math.ceil(Math.random() * triggerCount)
-            const trigger2 = Math.ceil(Math.random() * triggerCount)
-            document.getElementById("triggers").innerHTML = `Questlines ${trigger1} and ${trigger2} will both progress here.`
+          let questIdentifier = "main"
+          if (Math.random() < .3) {
+            questIdentifier = "side"
+          }
+          if (triggerRoll > 0 triggerRoll < 0.6) {
+            document.getElementById("triggers").innerHTML = `A clue for the ${questIdentifier} questline can be found here.`
+          } else if (triggerRoll > 0.6 triggerRoll < 0.9) {
+            document.getElementById("triggers").innerHTML = `The ${questIdentifier} questline can  progress here.`
+          } else if (triggerRoll > 0.9 triggerRoll < 1.0) {
+            document.getElementById("triggers").innerHTML = `Both the main and side questlines can both progress here.`
           }
 
           // colorize links
