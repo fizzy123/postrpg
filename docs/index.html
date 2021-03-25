@@ -51,10 +51,19 @@
       window.addEventListener('load', function () {
         var situations;
         var elements;
-        const queryElements = function(tags) {
+        const queryElements = function(tags, exclude) {
+          if (!exclude) {
+            exclude = []
+          }
           var matches = []
           for (element of elements) {
             match = true
+            for (tag of exclude) {
+               if (element.tags.indexOf(tag) != -1) {
+                 match = false
+                 break
+               }
+            }
             for (tag of tags) {
                if (element.tags.indexOf(tag) === -1) {
                  match = false 
