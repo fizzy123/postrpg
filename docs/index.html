@@ -84,6 +84,7 @@
           elements = await (await fetch("/gen/elements.json")).json()
           var encounter = randomWeightedChoice(encounters) 
           var encounterHTML = encounter.description.interpolate({ queryElements: queryElements })
+          console.log(encounter.id)
           document.getElementById("encounter").innerHTML = encounterHTML
 
           // determine triggers
