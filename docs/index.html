@@ -103,9 +103,9 @@
             questIdentifier = "side"
           }
           console.log("triggerRoll", triggerRoll)
-          if (triggerRoll > 0.2 && triggerRoll < 0.6) {
+          if (triggerRoll > 0 && triggerRoll < 0.4) {
             document.getElementById("triggers").innerHTML = `A clue for the ${questIdentifier} questline can be found here.`
-          } else if (triggerRoll > 0.7 && triggerRoll < 0.9) {
+          } else if (triggerRoll > 0.4 && triggerRoll < 0.9) {
             document.getElementById("triggers").innerHTML = `The ${questIdentifier} questline can  progress here.`
           } else if (triggerRoll > 0.9 && triggerRoll < 1.0) {
             document.getElementById("triggers").innerHTML = `Both the main and side questlines can both progress here.`
