@@ -84,8 +84,8 @@
           if (description.length === 0) {
             description = "No description provided"
           }
-          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div style="padding: 10px 0px;"><div class="colorize" style="font-size:20px" data-id=${choice.id}>${choice.name}</div><div>${description}</div></div></n>`
-          return `<div data-id=${choice.id} style="display: inline;">${choice.name}</div>`
+          document.getElementById("description").innerHTML = document.getElementById("description").innerHTML + `<div style="padding: 10px 0px;"><div class="colorize" style="font-size:20px" data-id=${choice.id.replace("\'","")}>${choice.name}</div><div>${description}</div></div></n>`
+          return `<div data-id=${choice.id.replace("\'","")} style="display: inline;">${choice.name}</div>`
         }
         var generate = async function() {
           // generate situation
@@ -116,7 +116,7 @@
           const coloredNames = document.body.querySelectorAll('.colorize');
           for (const name of coloredNames) {
             name.style.color = highlightColors[colorIndex]
-            const coloredTitle = document.body.querySelectorAll(`[data-id=${name.getAttribute("data-id")}]`)[0];
+            const coloredTitle = document.body.querySelectorAll(`[data-id=${name.getAttribute("data-id").replace("\'","")}]`)[0];
             coloredTitle.style.color = highlightColors[colorIndex]
             colorIndex = colorIndex + 1
             if (colorIndex >= 5) {
