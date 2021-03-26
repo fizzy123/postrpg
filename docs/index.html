@@ -79,6 +79,7 @@
           if (matches.length === 0) {
             throw Error(`No matches found for these tags: ${tags}`)
           }
+          console.log(matches)
           choice = randomWeightedChoice(matches)
           let description = choice.description
           if (description.length === 0) {
@@ -102,7 +103,6 @@
           if (Math.random() < .3) {
             questIdentifier = "side"
           }
-          console.log("triggerRoll", triggerRoll)
           if (triggerRoll > 0 && triggerRoll < 0.4) {
 //            document.getElementById("triggers").innerHTML = `A clue for the ${questIdentifier} questline can be found here.`
           } else if (triggerRoll > 0.4 && triggerRoll < 0.9) {
