@@ -79,7 +79,6 @@
           if (matches.length === 0) {
             throw Error(`No matches found for these tags: ${tags}`)
           }
-          console.log(matches)
           choice = randomWeightedChoice(matches)
           let description = choice.description
           if (description.length === 0) {
@@ -95,7 +94,8 @@
           var encounter = randomWeightedChoice(encounters) 
           var encounterHTML = encounter.description.interpolate({ queryElements: queryElements })
           console.log(encounter.id)
-          document.getElementById("encounter").innerHTML = encounterHTML
+          document.getElementById("encounter-desc").innerHTML = encounterHTML
+          document.getElementById("encounter").innerHTML = encounter.id
 
           // determine triggers
           const triggerRoll = Math.random()
@@ -156,6 +156,7 @@
   <body style="background-color: black;color: white;text-align: center;font-family: Arial;">
     <div style="padding-top: 50px;max-width: 1200px;padding-bottom: 41px;padding-left: 75px;padding-right: 75px;margin:auto">
       <div id="encounter" style="font-size: 48px;font-weight: bold;padding-bottom: 16px;"></div>
+      <div id="encounter-desc" style="font-size: 26px;"></div>
       <div id="triggers" style="font-size: 26px;"></div>
     </div>
     <div id="description" style="padding: 0px 75px;max-width: 800px;margin: auto;text-align: left;"></div>
