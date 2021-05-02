@@ -16,7 +16,7 @@ templateEnv = jinja2.Environment(loader=templateLoader)
 templateEnv.globals['queryElements'] = queryElements
 
 # generate elements
-sheetIndex = 2
+sheetIndex = 4
 response = requests.get("https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/{}/public/values?alt=json".format(sheetIndex))
 sheet = json.loads(response.content)
 
@@ -58,3 +58,36 @@ for row in sheet["feed"]["entry"]:
 with open('docs/gen/encounters.json', 'w') as outfile:
     json.dump(encounters, outfile)
 
+print("events")
+# generate events
+sheetIndex = 2
+response = requests.get("https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/{}/public/values?alt=json".format(sheetIndex))
+sheet = json.loads(response.content)
+
+events = []
+for row in sheet["feed"]["entry"]:
+    args = {
+      "name": row["gsx$name"]["$t"],
+      "description": row["gsx$description"]["$t"],
+      "attributes": json.loads(row["gsx$attributes"]["$t"]),
+    }
+    events.append(args)
+with open('docs/gen/events.json', 'w') as outfile:
+    json.dump(events, outfile)
+
+print("relationships")
+# generate relationships
+sheetIndex = 3
+response = requests.get("https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/{}/public/values?alt=json".format(sheetIndex))
+sheet = json.loads(response.content)
+
+relationships = []
+for row in sheet["feed"]["entry"]:
+    args = {
+      "causes": row["gsx$causes"]["$t"],
+      "event": row["gsx$event"]["$t"],
+      "mapping": row["gsx$mapping"]["$t"],
+    }
+    relationships.append(args)
+with open('docs/gen/relationships.json', 'w') as outfile:
+    json.dump(relationships, outfile)
