@@ -1,5 +1,38 @@
 <html>
   <head>
+    <style>
+      td {
+        background: #222;
+      }
+      .contentTitle {
+        background: #111;
+        margin: 10px 20px;
+        padding: 10px;
+      }
+      .selected {
+        border: 1px white solid;
+      }
+      .content {
+        padding: 20px;
+      }
+      .contentName {
+        font-size: 24px;
+      }
+      input,textarea {
+        width: 100%;
+        background-color: black;
+        color: white;
+      }
+      table {
+        margin: auto;
+      }
+      .generate {
+        margin: auto;
+      }
+      .highlight {
+        border: 1px white solid;
+      }
+    </style>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -11,9 +44,11 @@
       let emotions = []
       let archetypes = []
       let features = []
+      let events = []
+      let reactions = []
       let entities = []
       let items = []
-      const grid = [
+      let grid = [
         [[], [], []],
         [[], [], []],
         [[], [], []],
@@ -23,19 +58,19 @@
         // parse corpus sheet
 
         let sheetIndex = 7
-        let response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/#{sheetIndex}/public/values?alt=json`);
-        for (const row in response.data.feed.entry) {
-          if (row["gsx$personToPersonRel"]["$t"]) {
-            personToPersonRel.push(row["gsx$personToPersonRel"]["$t"])
+        let response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          if (row["gsx$persontopersonrel"]["$t"]) {
+            personToPersonRel.push(row["gsx$persontopersonrel"]["$t"])
           }
-          if (row["gsx$personToItemRel"]["$t"]) {
-            personToItemRel.push(row["gsx$personToItemRel"]["$t"])
+          if (row["gsx$persontoitemrel"]["$t"]) {
+            personToItemRel.push(row["gsx$persontoitemrel"]["$t"])
           }
-          if (row["gsx$personToFeatureRel"]["$t"]) {
-            personToFeatureRel.push(row["gsx$personToFeatureRel"]["$t"])
+          if (row["gsx$persontofeaturerel"]["$t"]) {
+            personToFeatureRel.push(row["gsx$persontofeaturerel"]["$t"])
           }
-          if (row["gsx$featureToItemRel"]["$t"]) {
-            featureToItemRel.push(row["gsx$featureToItemRel"]["$t"])
+          if (row["gsx$featuretoitemrel"]["$t"]) {
+            featureToItemRel.push(row["gsx$featuretoitemrel"]["$t"])
           }
           if (row["gsx$emotions"]["$t"]) {
             emotions.push(row["gsx$emotions"]["$t"])
@@ -51,27 +86,33 @@
               type:"feature",
             })
           }
+          if (row["gsx$events"]["$t"]) {
+            events.push(row["gsx$events"]["$t"])
+          }
+          if (row["gsx$reactions"]["$t"]) {
+            reactions.push(row["gsx$reactions"]["$t"])
+          }
         }
         // parse entity sheet
         sheetIndex = 8
-        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/#{sheetIndex}/public/values?alt=json`);
-        for (const row in repsonse.data.feed.entry) {
-          entities,push({
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          entities.push({
             id: idCounter++,
             name: row["gsx$name"]["$t"],
             description: row["gsx$description"]["$t"],
             type: "entity",
-            emotion: emotions[Math.floor(Math.random() * emotiions.length)],
+            emotion: emotions[Math.floor(Math.random() * emotions.length)],
           })
         }
         // parse items sheet
         sheetIndex = 9
-        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/#{sheetIndex}/public/values?alt=json`);
-        for (const row in repsonse.data.feed.entry) {
-          items,push({
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          items.push({
             id: idCounter++,
             name: row["gsx$name"]["$t"],
-            description: `${row["gsx$description"]["$t"]}<br>Emotion: ${emotions[Math.floor(Math.random() * emotiions.length)]}`,
+            description: row["gsx$description"]["$t"],
             type: "item",
           })
         }
@@ -94,7 +135,25 @@
       
         return array;
       }
+			const rotate = function(nums, k) {
+				if(nums.length > k){
+					nums.unshift( ...nums.splice(-k))
+				} else {
+					let i = 0
+					while(i < k){
+						nums.unshift(nums.splice(-1))
+						i++
+					}
+				}
+				return nums
+
+			};
       const generateMap = () => {
+        grid = [
+          [[], [], []],
+          [[], [], []],
+          [[], [], []],
+        ]
         // select which magic items will exist
         items = shuffle(items)
         const itemSelection = items.slice(0,4)
@@ -105,7 +164,7 @@
           characters.push({
             id: idCounter++,
             name: faker.name.findName(),
-            description: `Archetype: ${archetypes(Math.floor(Math.random() * archetypes.length))}<br>Emotion: ${emotions[Math.floor(Math.random() * emotiions.length)]}`,
+            description: `Archetype: ${archetypes[Math.floor(Math.random() * archetypes.length)]}\n`,
             type: "character",
           })
         }
@@ -118,79 +177,104 @@
         features = shuffle(features)
         const featureSelection = features.slice(0,5)
 
-        // assign characters, entities, features and items to cells
-        const content = shuffle(characters.concat(entitySelecton).concat(featureSelection).concat(items))
-        let positions = []
-        for (let i = 0; i < 9; i++) {
-          for (let j = 0; j < Math.ceil(content.length / 9); j++) {
-            positions.push(i)
+        const subjects = [...characters];
+        const predicates = rotate([...characters], 1);
+        for (let i = 0; i < subjects.length; i++) {
+          const subject = subjects[i]
+          const predicate = predicates[i]
+          if (subject.name === predicate.name) {
+            continue
           }
+          const event = events[Math.floor(Math.random() * events.length)]
+          subject.description = `${subject.description}\n${subject.name} ${event} ${predicate.name}\nThey left the encounter feeling ${emotions[Math.floor(Math.random() * emotions.length)]}\n`
+          predicate.description = `${predicate.description}\n${subject.name} ${event} ${predicate.name}\nThey left the encounter feeling ${emotions[Math.floor(Math.random() * emotions.length)]}\n`
         }
-        positions = shuffle(positions)
+
+        for (let i = 0; i < characters.length; i++) {
+          characters[i].description = `${characters[i].description}\nAs a result, they now ${reactions[Math.floor(Math.random() * reactions.length)]} someone/something.`
+        }
+
+        // assign characters, entities, features and items to cells
+        const content = shuffle(characters).concat(shuffle(entitySelection)).concat(shuffle(featureSelection)).concat(shuffle(itemSelection))
+        let positions = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
           grid[Math.floor(positions[i] / 3)][Math.floor(positions[i] % 3)].push(content[i])
           content[i].position = positions[i]
         }
+        //// generate relationships and relationship details to characters, entities, and features
+        //for (let index = 0; index < 2; index++) {
+        //  const subjects = [...shuffle(content)]
+        //  const predicates = [...shuffle(content)]
+        //  for (let i = 0; i < subjects.length; i++) {
+        //    const subject = subjects[i]
+        //    const predicate = predicates[i]
+        //    if (subject.name === predicate.name) {
+        //      continue
+        //    }
 
-        // generate relationships and relationship details to characters, entities, and features
-        const subjects = [...shuffle(content)]
-        const predicates = [...shuffle(content)]
-        for (let i = 0; i < subjects.length; i++) {
-          const subject = subjects[i]
-          const predicate = predicates[i]
-          let relationship
-          if ((subject.type === "character" || subject.type === "entity") ||
-              (predicate.type === "character" || predicate.type === "entity")) {
-            relationship = {
-              text: personToPersonRel[Math.floor(Math.random() * personToPersonRel.length)],
-              subject: subject,
-              predicate: predicate,
-            }
-          } else if ((subject.type === "character" && predicate.type === "item") ||
-                     (subject.type === "entity" || predicate.type === "item")) {
-            relationship = {
-              text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
-              subject: subject,
-              predicate: predicate,
-            }
-          } else if ((subject.type === "item" && predicate.type === "character") ||
-                     (subject.type === "item" && predicate.type === "entity")) {
-            relationship = {
-              text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
-              subject: predicate,
-              predicate: subject,
-            }
-          } else if ((subject.type === "character" && predicate.type === "feature") ||
-                     (subject.type === "entity" && predicate.type === "feature")) {
-            relationship = {
-              text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
-              subject: subject,
-              predicate: predicate,
-            }
-          } else if ((subject.type === "feature" && predicate.type === "character") ||
-                     (subject.type === "feature" && predicate.type === "entity")) {
-            relationship = {
-              text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
-              subject: predicate,
-              predicate: subject,
-            }
-          } else if (subject.type === "item" && predicate.type === "feature") {
-            relationship = {
-              text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
-              subject: predicate,
-              predicate: subject,
-            }
-          } else if (subject.type === "feature" && predicate.type === "item") {
-            relationship = {
-              text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
-              subject: subject,
-              predicate: predicate,
-            }
-          }
+        //    let relationship
+        //    if ((subject.type === "character" || subject.type === "entity") &&
+        //        (predicate.type === "character" || predicate.type === "entity")) {
+        //      relationship = {
+        //        text: personToPersonRel[Math.floor(Math.random() * personToPersonRel.length)],
+        //        subject: subject,
+        //        predicate: predicate,
+        //      }
+        //    } else if ((subject.type === "character" && predicate.type === "item") ||
+        //               (subject.type === "entity" && predicate.type === "item")) {
+        //      relationship = {
+        //        text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
+        //        subject: subject,
+        //        predicate: predicate,
+        //      }
+        //    } else if ((subject.type === "item" && predicate.type === "character") ||
+        //               (subject.type === "item" && predicate.type === "entity")) {
+        //      relationship = {
+        //        text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
+        //        subject: predicate,
+        //        predicate: subject,
+        //      }
+        //    } else if ((subject.type === "character" && predicate.type === "feature") ||
+        //               (subject.type === "entity" && predicate.type === "feature")) {
+        //      relationship = {
+        //        text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
+        //        subject: subject,
+        //        predicate: predicate,
+        //      }
+        //    } else if ((subject.type === "feature" && predicate.type === "character") ||
+        //               (subject.type === "feature" && predicate.type === "entity")) {
+        //      relationship = {
+        //        text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
+        //        subject: predicate,
+        //        predicate: subject,
+        //      }
+        //    } else if (subject.type === "item" && predicate.type === "feature") {
+        //      relationship = {
+        //        text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
+        //        subject: predicate,
+        //        predicate: subject,
+        //      }
+        //    } else if (subject.type === "feature" && predicate.type === "item") {
+        //      relationship = {
+        //        text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
+        //        subject: subject,
+        //        predicate: predicate,
+        //      }
+        //    } else {
+        //      console.log(subject.type)
+        //      console.log(predicate.type)
+        //      console.log("\n")
+        //      continue
+        //    }
 
-          relationship.subject.description = `${relationship.subject.description}<br>${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`
-          relationship.predicate.description = `${relationship.object.description}<br>${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`
-        }
+        //    relationship.subject.description = `${relationship.subject.description}\n${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`.trim()
+        //    relationship.predicate.description = `${relationship.predicate.description}\n${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`.trim()
+        //  }
+        //}
+        window.localStorage.grid = JSON.stringify(grid)
+        updateGrid()
+        showContents($(".description").data("x"), $(".description").data("y"))
       }
       const createMapRepresentation = () => {
         // create table
@@ -203,71 +287,101 @@
       }
       const showContents = (x, y) => {
         let contents = grid[x][y]
-        $(".description").empty()
+        $(".description").remove()
+        const descriptionDiv = $("<div>")
+        descriptionDiv.addClass("description")
         for (const content of contents) {
           contentDiv = $("<div>")
           contentDiv.addClass("content")
-          contentDiv.data.id = content.id
+          contentDiv.data("id", content.id)
 
           nameInput = $("<input>")
-          nameInput.addClass("name")
-          nameInput.contents = content.name
-          nameInput.change = updateContent
+          nameInput.addClass("contentName")
+          nameInput.val(content.name)
+          nameInput.keyup(updateContent)
           contentDiv.append(nameInput)
 
-          descriptionInput = $("<input>")
-          descriptionInput.addClass("description")
-          descriptionInput.contents = content.description
-          descriptionInput.change = updateContent
-          contentDiv.append(titleInput)         
+          contentDiv.append($("<br>"))
+
+          descriptionInput = $("<textarea>")
+          descriptionInput.addClass("contentDescription")
+          descriptionInput.val(content.description)
+          descriptionInput.keyup(updateContent)
+          contentDiv.append(descriptionInput)         
 
           const removeContentDiv = $("<div>")
           removeContentDiv.text = "DELETE"
-          removeContentDiv.click = removeContent
+          removeContentDiv.click(removeContent)
           contentDiv.append(removeContentDiv)
           
-          $(".description").append(contentDiv)
+          descriptionDiv.append(contentDiv)
         }
         const addContentDiv = $("<div>")
         addContentDiv.text = "+"
-        addContentDiv.click = addContent
-        $(".description").append(addContentDiv)
-        $(".description").data.x = x
-        $(".description").data.y = y
+        addContentDiv.click(addContent)
+        descriptionDiv.append(addContentDiv)
+        descriptionDiv.data("x", x)
+        descriptionDiv.data("y", y)
+        console.log("description div")
+        console.log(descriptionDiv)
+        console.log("x", descriptionDiv.data("x"))
+        console.log("y", descriptionDiv.data("y"))
+
         updateGrid();
+        $(".cell" + x + "-" + y).addClass("highlight")
+        $("body").append(descriptionDiv)
+        $(".contentDescription").each(function() {
+          $(this).css("height", "");
+          $(this).css("height", $(this).prop("scrollHeight") + "px");
+        })
       }
       const addContent = () => {
-        const x = $(".description").data.x
-        const y = $(".description").data.y
+        const x = $(".description").data("x")
+        const y = $(".description").data("y")
         grid[x][y].push({
           id: idCounter++
         })
+        window.localStorage.grid = JSON.stringify(grid)
         updateGrid()
       }
-      const rremoveContent = () => {
-        const x = $(".description").data.x
-        const y = $(".description").data.y
-        const id = $(this).parent(".content")
+      const removeContent = function() {
+        const x = $(".description").data("x")
+        const y = $(".description").data("y")
+        const id = $(this).parents(".content")
+        window.localStorage.grid = JSON.stringify(grid)
         updateGrid()
       }
-      const updateContent = () => {
+      const updateContent = function() {
+        $(this).css("height", "");
+        $(this).css("height", $(this).prop("scrollHeight") + "px");
         // update state
-        const x = $(this).parent(".description").data.x
-        const y = $(this).parent(".description").data.y
-        const id = $(this).data.id
+        const x = $(this).parents(".description").data("x")
+        const y = $(this).parents(".description").data("y")
+        const id = $(this).parents(".content").data("id")
+        console.log("update")
+        console.log("x: ", x)
+        console.log("y: ", y)
         const contents = grid[x][y]
         for (const content of contents) {
           if (content.id === id) {
-            content[$(this).attr('class')] = $(this).content
+            content[$(this).attr('class').slice(7).toLowerCase()] = $(this).val()
           }
         }
+        window.localStorage.grid = JSON.stringify(grid)
         updateGrid()
       }
       const updateGrid = () => {
         $("table").remove()
+        $(".generate").remove()
 
-        const x = $(".description").data.x
-        const y = $(".description").data.y
+        const generateButton = $("<button>")
+        generateButton.text("Generate")
+        generateButton.click(generateMap)
+        generateButton.addClass("generate")
+        $("body").prepend(generateButton)
+
+        const x = $(".description").data("x")
+        const y = $(".description").data("y")
 
         const table = $("<table>")
         const tbody = $("<tbody>")
@@ -278,33 +392,40 @@
             let td = $("<td>")
             td.data("x", i)
             td.data("y", j)
+            td.addClass("cell" + i + "-" + j)
             let cellContents = grid[i][j]
             for (const content of cellContents) {
               let titleDiv = $("<div>")
               titleDiv.text(content.name)
+              titleDiv.addClass("contentTitle")
               td.append(titleDiv)
             }
-            td.click(function(){
+            td.click(function() {
               showContents($(this).data("x"), $(this).data("y"))
             })
             if (i === x && j === y) {
-              td.style.background = "#FF0000"
+              td.addClass("selected")
             }
             tr.append(td)
           }
           tbody.append(tr)
         }
         table.append(tbody)
-        $("body").append(table)
+        $("body").prepend(table)
       }
       const init = async () => {
         await establishCorpus()
-        generateMap()
+        if (!window.localStorage.grid) {
+          generateMap()
+        } else {
+          grid = JSON.parse(window.localStorage.grid)
+          updateGrid()
+        }
         createMapRepresentation()
       }
       $( document ).ready(init)
     </script>
   </head>
-  <body>
+  <body style="background-color:black;color:white;text-align: center;">
   </body>
 </html>
