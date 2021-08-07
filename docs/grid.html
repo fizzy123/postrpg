@@ -48,11 +48,13 @@
       let reactions = []
       let entities = []
       let items = []
-      let grid = [
-        [[], [], []],
-        [[], [], []],
-        [[], [], []],
-      ]
+      let scenario = [
+          [],
+          [],
+          [],
+          [],
+          [],
+        ]
       let idCounter = 0
       let establishCorpus = async () => {
         // parse corpus sheet
@@ -149,10 +151,12 @@
 
 			};
       const generateMap = () => {
-        grid = [
-          [[], [], []],
-          [[], [], []],
-          [[], [], []],
+        scenario = [
+          [],
+          [],
+          [],
+          [],
+          [],
         ]
         // select which magic items will exist
         items = shuffle(items)
@@ -164,7 +168,7 @@
           characters.push({
             id: idCounter++,
             name: faker.name.findName(),
-            description: `Archetype: ${archetypes[Math.floor(Math.random() * archetypes.length)]}\n`,
+            description: `Archetypes: ${archetypes[Math.floor(Math.random() * archetypes.length)]}, ${archetypes[Math.floor(Math.random() * archetypes.length)]}\n`,
             type: "character",
           })
         }
@@ -196,236 +200,44 @@
 
         // assign characters, entities, features and items to cells
         const content = shuffle(characters).concat(shuffle(entitySelection)).concat(shuffle(featureSelection)).concat(shuffle(itemSelection))
-        let positions = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        let positions = [0, 1, 2, 3, 4]
         positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
-          grid[Math.floor(positions[i] / 3)][Math.floor(positions[i] % 3)].push(content[i])
-          content[i].position = positions[i]
+          scenario[positions[i]].push(content[i])
         }
-        //// generate relationships and relationship details to characters, entities, and features
-        //for (let index = 0; index < 2; index++) {
-        //  const subjects = [...shuffle(content)]
-        //  const predicates = [...shuffle(content)]
-        //  for (let i = 0; i < subjects.length; i++) {
-        //    const subject = subjects[i]
-        //    const predicate = predicates[i]
-        //    if (subject.name === predicate.name) {
-        //      continue
-        //    }
-
-        //    let relationship
-        //    if ((subject.type === "character" || subject.type === "entity") &&
-        //        (predicate.type === "character" || predicate.type === "entity")) {
-        //      relationship = {
-        //        text: personToPersonRel[Math.floor(Math.random() * personToPersonRel.length)],
-        //        subject: subject,
-        //        predicate: predicate,
-        //      }
-        //    } else if ((subject.type === "character" && predicate.type === "item") ||
-        //               (subject.type === "entity" && predicate.type === "item")) {
-        //      relationship = {
-        //        text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
-        //        subject: subject,
-        //        predicate: predicate,
-        //      }
-        //    } else if ((subject.type === "item" && predicate.type === "character") ||
-        //               (subject.type === "item" && predicate.type === "entity")) {
-        //      relationship = {
-        //        text: personToItemRel[Math.floor(Math.random() * personToItemRel.length)],
-        //        subject: predicate,
-        //        predicate: subject,
-        //      }
-        //    } else if ((subject.type === "character" && predicate.type === "feature") ||
-        //               (subject.type === "entity" && predicate.type === "feature")) {
-        //      relationship = {
-        //        text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
-        //        subject: subject,
-        //        predicate: predicate,
-        //      }
-        //    } else if ((subject.type === "feature" && predicate.type === "character") ||
-        //               (subject.type === "feature" && predicate.type === "entity")) {
-        //      relationship = {
-        //        text: personToFeatureRel[Math.floor(Math.random() * personToFeatureRel.length)],
-        //        subject: predicate,
-        //        predicate: subject,
-        //      }
-        //    } else if (subject.type === "item" && predicate.type === "feature") {
-        //      relationship = {
-        //        text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
-        //        subject: predicate,
-        //        predicate: subject,
-        //      }
-        //    } else if (subject.type === "feature" && predicate.type === "item") {
-        //      relationship = {
-        //        text: featureToItemRel[Math.floor(Math.random() * featureToItemRel.length)],
-        //        subject: subject,
-        //        predicate: predicate,
-        //      }
-        //    } else {
-        //      console.log(subject.type)
-        //      console.log(predicate.type)
-        //      console.log("\n")
-        //      continue
-        //    }
-
-        //    relationship.subject.description = `${relationship.subject.description}\n${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`.trim()
-        //    relationship.predicate.description = `${relationship.predicate.description}\n${relationship.subject.name} ${relationship.text} ${relationship.predicate.name}`.trim()
-        //  }
-        //}
-        window.localStorage.grid = JSON.stringify(grid)
-        updateGrid()
-        showContents($(".description").data("x"), $(".description").data("y"))
+        printScenario(scenario)
       }
-      const createMapRepresentation = () => {
-        // create table
-        updateGrid()
-        // create description
-        const descriptionDiv = $("<div>")
-        descriptionDiv.addClass("description")
-        descriptionDiv.text = "Click on a cell to show more detailed information."
-        $("body").append(descriptionDiv)
-      }
-      const showContents = (x, y) => {
-        let contents = grid[x][y]
-        $(".description").remove()
-        const descriptionDiv = $("<div>")
-        descriptionDiv.addClass("description")
-        for (const content of contents) {
-          contentDiv = $("<div>")
-          contentDiv.addClass("content")
-          contentDiv.data("id", content.id)
 
-          nameInput = $("<input>")
-          nameInput.addClass("contentName")
-          nameInput.val(content.name)
-          nameInput.keyup(updateContent)
-          contentDiv.append(nameInput)
-
-          contentDiv.append($("<br>"))
-
-          descriptionInput = $("<textarea>")
-          descriptionInput.addClass("contentDescription")
-          descriptionInput.val(content.description)
-          descriptionInput.keyup(updateContent)
-          contentDiv.append(descriptionInput)         
-
-          const removeContentDiv = $("<div>")
-          removeContentDiv.text = "DELETE"
-          removeContentDiv.click(removeContent)
-          contentDiv.append(removeContentDiv)
-          
-          descriptionDiv.append(contentDiv)
-        }
-        const addContentDiv = $("<div>")
-        addContentDiv.text = "+"
-        addContentDiv.click(addContent)
-        descriptionDiv.append(addContentDiv)
-        descriptionDiv.data("x", x)
-        descriptionDiv.data("y", y)
-        console.log("description div")
-        console.log(descriptionDiv)
-        console.log("x", descriptionDiv.data("x"))
-        console.log("y", descriptionDiv.data("y"))
-
-        updateGrid();
-        $(".cell" + x + "-" + y).addClass("highlight")
-        $("body").append(descriptionDiv)
-        $(".contentDescription").each(function() {
-          $(this).css("height", "");
-          $(this).css("height", $(this).prop("scrollHeight") + "px");
-        })
-      }
-      const addContent = () => {
-        const x = $(".description").data("x")
-        const y = $(".description").data("y")
-        grid[x][y].push({
-          id: idCounter++
-        })
-        window.localStorage.grid = JSON.stringify(grid)
-        updateGrid()
-      }
-      const removeContent = function() {
-        const x = $(".description").data("x")
-        const y = $(".description").data("y")
-        const id = $(this).parents(".content")
-        window.localStorage.grid = JSON.stringify(grid)
-        updateGrid()
-      }
-      const updateContent = function() {
-        $(this).css("height", "");
-        $(this).css("height", $(this).prop("scrollHeight") + "px");
-        // update state
-        const x = $(this).parents(".description").data("x")
-        const y = $(this).parents(".description").data("y")
-        const id = $(this).parents(".content").data("id")
-        console.log("update")
-        console.log("x: ", x)
-        console.log("y: ", y)
-        const contents = grid[x][y]
-        for (const content of contents) {
-          if (content.id === id) {
-            content[$(this).attr('class').slice(7).toLowerCase()] = $(this).val()
+      const printScenario = async (scenario) => {
+        scenarioText = ""
+        for (let i = 0; i < scenario.length; i++) {
+          scenarioText += `====Encounter ${i}====\n`
+          for (let content of scenario[i]) {
+            scenarioText += `${content.name.toUpperCase()}\n`
+            scenarioText += `${content.description}\n`
+            scenarioText += "\n"
           }
+          scenarioText += "\n"
         }
-        window.localStorage.grid = JSON.stringify(grid)
-        updateGrid()
+        window.localStorage.scenario = scenarioText
+        $(".scenario").text(scenarioText);
       }
-      const updateGrid = () => {
-        $("table").remove()
-        $(".generate").remove()
 
-        const generateButton = $("<button>")
-        generateButton.text("Generate")
-        generateButton.click(generateMap)
-        generateButton.addClass("generate")
-        $("body").prepend(generateButton)
-
-        const x = $(".description").data("x")
-        const y = $(".description").data("y")
-
-        const table = $("<table>")
-        const tbody = $("<tbody>")
-        
-        for (let i = 0; i < 3; i++) {
-          let tr = $("<tr>")
-          for (let j = 0; j < 3; j++) {
-            let td = $("<td>")
-            td.data("x", i)
-            td.data("y", j)
-            td.addClass("cell" + i + "-" + j)
-            let cellContents = grid[i][j]
-            for (const content of cellContents) {
-              let titleDiv = $("<div>")
-              titleDiv.text(content.name)
-              titleDiv.addClass("contentTitle")
-              td.append(titleDiv)
-            }
-            td.click(function() {
-              showContents($(this).data("x"), $(this).data("y"))
-            })
-            if (i === x && j === y) {
-              td.addClass("selected")
-            }
-            tr.append(td)
-          }
-          tbody.append(tr)
-        }
-        table.append(tbody)
-        $("body").prepend(table)
-      }
       const init = async () => {
+        $(".generate-button").click(generateMap)
         await establishCorpus()
-        if (!window.localStorage.grid) {
+        if (!window.localStorage.scenario) {
           generateMap()
         } else {
-          grid = JSON.parse(window.localStorage.grid)
-          updateGrid()
+          scenarioText = JSON.parse(window.localStorage.scenario)
+          $(".scenario").text(scenarioText);
         }
-        createMapRepresentation()
       }
       $( document ).ready(init)
     </script>
   </head>
   <body style="background-color:black;color:white;text-align: center;">
+    <textarea class="scenario"></textarea>
+    <button class="generate-button">Generate</button>
   </body>
 </html>
