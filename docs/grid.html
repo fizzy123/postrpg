@@ -212,7 +212,7 @@
       const printScenario = async (scenario) => {
         scenarioText = ""
         for (let i = 0; i < scenario.length; i++) {
-          scenarioText += `====Encounter ${i}====\n`
+          scenarioText += `====Encounter ${i+1}====\n`
           for (let content of scenario[i]) {
             scenarioText += `${content.name.toUpperCase()}\n`
             scenarioText += `${content.description}\n`
@@ -239,7 +239,7 @@
     </script>
   </head>
   <body style="background-color:black;color:white;text-align: center;">
-    <textarea class="scenario"></textarea>
+    <textarea class="scenario" style="height=95%"></textarea>
     <button class="generate-button">Generate</button>
   </body>
 </html>
