@@ -118,6 +118,7 @@
             type: "item",
           })
         }
+        console.log("pulled items")
       }
       function shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
@@ -226,7 +227,8 @@
       const init = async () => {
         $(".generate-button").click(generateMap)
         await establishCorpus()
-        if (!window.localStorage.scenario) {
+        //if (!window.localStorage.scenario) {
+        if (true) {
           generateMap()
         } else {
           scenarioText = window.localStorage.scenario
