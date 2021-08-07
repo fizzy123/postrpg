@@ -201,7 +201,7 @@
         // assign characters, entities, features and items to cells
         const content = shuffle(characters).concat(shuffle(entitySelection)).concat(shuffle(featureSelection)).concat(shuffle(itemSelection))
         let positions = [0, 1, 2, 3, 4]
-        positions = shuffle(positions).concat(shuffle(positions))
+        positions = shuffle(positions).concat(shuffle(positions)).concat(shuffle(positions)).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
           scenario[positions[i]].push(content[i])
         }
