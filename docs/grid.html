@@ -229,7 +229,7 @@
         if (!window.localStorage.scenario) {
           generateMap()
         } else {
-          scenarioText = JSON.parse(window.localStorage.scenario)
+          scenarioText = window.localStorage.scenario
           $(".scenario").text(scenarioText);
         }
       }
