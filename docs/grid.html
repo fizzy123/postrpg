@@ -230,11 +230,11 @@ function randomChoice(array) {
         ]
         // select which magic items will exist
         items = shuffle(items)
-        const itemSelection = items.slice(0,4)
+        const itemSelection = items.slice(0,3)
 
         // choose which monsters should be on the map
         monsters = shuffle(monsters)
-        const monsterSelection = monsters.slice(0,5)
+        const monsterSelection = monsters.slice(0,3)
 
         // generate characters that should exist
         const characters = []
@@ -275,14 +275,14 @@ function randomChoice(array) {
           let companionCount = Math.floor(3 * Math.random())
           for (let j = 0; j < companionCount; j++) {
             let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
-            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, an ${randomChoice(archetypes).name}. They are here because ${companionMotivation}.`
+            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, ${randomChoice(archetypes).name}. They are here because ${companionMotivation}.`
           }
         }
 
         // assign characters, monsters, and items to cells
         const content = shuffle(monsterSelection).concat(shuffle(itemSelection))
         let positions = [0, 1, 2, 3, 4]
-        positions = shuffle(positions).concat(shuffle(positions)).concat(shuffle(positions)).concat(shuffle(positions))
+        positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
           scenario[positions[i]].push(content[i])
         }
