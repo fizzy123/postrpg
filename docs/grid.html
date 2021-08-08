@@ -119,9 +119,6 @@ function randomChoice(array) {
           if (row["gsx$emotions"]["$t"]) {
             emotions.push(row["gsx$emotions"]["$t"])
           }
-          if (row["gsx$archetypes"]["$t"]) {
-            archetypes.push(row["gsx$archetypes"]["$t"])
-          }
           if (row["gsx$events"]["$t"]) {
             events.push(row["gsx$events"]["$t"])
           }
@@ -134,6 +131,16 @@ function randomChoice(array) {
           if (row["gsx$companionmotivation"]["$t"]) {
             companionMotivations.push(row["gsx$companionmotivation"]["$t"])
           }
+        }
+
+        // parse archetypes sheet
+        sheetIndex = 6
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          archetypes.push({
+            name: row["gsx$name"]["$t"],
+            weight: row["gsx$weight"]["$t"],
+          })
         }
         // parse monster sheet
         sheetIndex = 8
@@ -232,8 +239,8 @@ function randomChoice(array) {
         // generate characters that should exist
         const characters = []
         for (let index = 0; index < 3; index++) {
-          var archetype1 = archetypes[Math.floor(Math.random() * archetypes.length)]
-          var archetype2 = archetypes[Math.floor(Math.random() * archetypes.length)]
+          var archetype1 = randomChoice(archetypes)
+          var archetype2 = randomChoice(archetypes)
           var archetype = `${archetype1}, ${archetype2}`
           if (archetype1 === archetype2) {
             archetype = archetype1
@@ -268,7 +275,7 @@ function randomChoice(array) {
           let companionCount = Math.floor(3 * Math.random())
           for (let j = 0; j < companionCount; j++) {
             let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
-            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, an ${archetypes[Math.floor(Math.random() * archetypes.length)]}. They are here because ${companionMotivation}.`
+            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, an ${randomChoice(archetypes)}. They are here because ${companionMotivation}.`
           }
         }
 
