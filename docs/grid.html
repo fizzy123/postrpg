@@ -288,7 +288,7 @@ function randomChoice(array) {
 
           characters[i].description = `${characters[i].description}\nThis character ${relationship.name} ${predicate}`
 
-          # add additional desire that is specific to a person
+          // add additional desire that is specific to a person
           let personRelationship = peopleRelationships[Math.floor(Math.random() * peopleRelationships.length)]
           selection = [...Array(characters.length).keys()]
           selection.splice(selection.indexOf(i), 1)
