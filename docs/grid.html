@@ -48,13 +48,12 @@ function randomChoice(array) {
     // First, we loop the main dataset to count up the total weight. We're starting the counter at one because the upper boundary of Math.random() is exclusive.
     var total = 0;
     for (var i = 0; i < array.length; ++i) {
-      total += array[i].weight;
+      total += parseInt(array[i].weight);
     }
 
     // Total in hand, we can now pick a random value akin to our
     // random index from before.
     const threshold = Math.random() * total;
-    console.log(threshold);
 
     // Now we just need to loop through the main data one more time
     // until we discover which value would live within this
