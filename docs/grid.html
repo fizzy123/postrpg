@@ -37,6 +37,42 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+// supports both simple arrays and complex weighted arrays
+function randomChoice(array) {
+  if (array.length === 0) {
+    return
+  }
+  if (typeof array[0] !== "object" || Array.isArray(array[0])) {
+    return array[Math.floor(array.length * Math.random())]
+  } else {
+    // First, we loop the main dataset to count up the total weight. We're starting the counter at one because the upper boundary of Math.random() is exclusive.
+    var total = 0;
+    for (var i = 0; i < array.length; ++i) {
+      total += array[i].weight;
+    }
+
+    // Total in hand, we can now pick a random value akin to our
+    // random index from before.
+    const threshold = Math.floor(Math.random() * total);
+
+    // Now we just need to loop through the main data one more time
+    // until we discover which value would live within this
+    // particular threshold. We need to keep a running count of
+    // weights as we go, so let's just reuse the "total" variable
+    // since it was already declared.
+    total = 0;
+    for (var i = 0; i < array.length; ++i) {
+      // Add the weight to our running total.
+      total += array[i].weight;
+
+      // If this value falls within the threshold, we're done!
+      if (total >= threshold) {
+        return array[i];
+      }
+    }
+    return array[i];
+  }
+}
       let relationships = []
       let emotions = []
       let archetypes = []
@@ -142,6 +178,7 @@
             name: row["gsx$name"]["$t"],
             description: row["gsx$description"]["$t"],
             type: "factions",
+            weight: row["gsx$weight"]["$t"],
           })
         }
         console.log("pulled content")
@@ -201,7 +238,7 @@
           if (archetype1 === archetype2) {
             archetype = archetype1
           }
-          var faction = factions[Math.floor(Math.random() * factions.length)]
+          var faction = randomChoice(factions)
           characters.push({
             id: idCounter++,
             name: faker.name.findName(),
@@ -250,7 +287,7 @@
         for (let i = 0; i < scenario.length; i++) {
           scenarioText += `====Encounter ${i+1}====\n`
           let location = locations[Math.floor(Math.random() * locations.length)]
-          scenarioText += `Location: ${location.name}\n${location.description}\n`
+          scenarioText += `Location: ${location.name}\n${location.description}\n\n`
           for (let content of scenario[i]) {
             scenarioText += `${content.name.toUpperCase()}\n`
             scenarioText += `${content.description}\n`
