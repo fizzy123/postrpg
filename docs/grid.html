@@ -37,17 +37,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      let personToPersonRel = []
-      let personToItemRel = []
-      let personToFeatureRel = []
-      let featureToItemRel = []
+      let relationships = []
       let emotions = []
       let archetypes = []
-      let features = []
+      let factions = []
+      let locations = []
       let events = []
       let reactions = []
-      let entities = []
+      let monsters = []
       let items = []
+      let companionMotivation = []
       let scenario = [
           [],
           [],
@@ -63,16 +62,22 @@
         let response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
         for (const row of response.data.feed.entry) {
           if (row["gsx$persontopersonrel"]["$t"]) {
-            personToPersonRel.push(row["gsx$persontopersonrel"]["$t"])
+            relationships.push({
+              name: row["gsx$persontopersonrel"]["$t"],
+              type: "person",
+            })
           }
           if (row["gsx$persontoitemrel"]["$t"]) {
-            personToItemRel.push(row["gsx$persontoitemrel"]["$t"])
+            relationships.push({
+              name: row["gsx$persontoitemrel"]["$t"],
+              type: "item",
+            })
           }
-          if (row["gsx$persontofeaturerel"]["$t"]) {
-            personToFeatureRel.push(row["gsx$persontofeaturerel"]["$t"])
-          }
-          if (row["gsx$featuretoitemrel"]["$t"]) {
-            featureToItemRel.push(row["gsx$featuretoitemrel"]["$t"])
+          if (row["gsx$persontomonsterrel"]["$t"]) {
+            relationships.push({
+              name: row["gsx$persontomonsterrel"]["$t"],
+              type: "monster",
+            })
           }
           if (row["gsx$emotions"]["$t"]) {
             emotions.push(row["gsx$emotions"]["$t"])
@@ -80,30 +85,28 @@
           if (row["gsx$archetypes"]["$t"]) {
             archetypes.push(row["gsx$archetypes"]["$t"])
           }
-          if (row["gsx$features"]["$t"]) {
-            features.push({
-              id: idCounter++,
-              name: row["gsx$features"]["$t"],
-              description: "",
-              type:"feature",
-            })
-          }
           if (row["gsx$events"]["$t"]) {
             events.push(row["gsx$events"]["$t"])
           }
           if (row["gsx$reactions"]["$t"]) {
             reactions.push(row["gsx$reactions"]["$t"])
           }
+          if (row["gsx$experiences"]["$t"]) {
+            experiences.push(row["gsx$experiences"]["$t"])
+          }
+          if (row["gsx$companionMotivation"]["$t"]) {
+            companionMotivation.push(row["gsx$companionMotivation"]["$t"])
+          }
         }
-        // parse entity sheet
+        // parse monster sheet
         sheetIndex = 8
         response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
         for (const row of response.data.feed.entry) {
-          entities.push({
+          monsters.push({
             id: idCounter++,
             name: row["gsx$name"]["$t"],
             description: row["gsx$description"]["$t"],
-            type: "entity",
+            type: "monster",
             emotion: emotions[Math.floor(Math.random() * emotions.length)],
           })
         }
@@ -118,7 +121,29 @@
             type: "item",
           })
         }
-        console.log("pulled items")
+        // parse locations sheet
+        sheetIndex = 10
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          locations.push({
+            id: idCounter++,
+            name: row["gsx$name"]["$t"],
+            description: row["gsx$description"]["$t"],
+            type: "locations",
+          })
+        }
+        // parse faction sheet
+        sheetIndex = 11
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          factions.push({
+            id: idCounter++,
+            name: row["gsx$name"]["$t"],
+            description: row["gsx$description"]["$t"],
+            type: "factions",
+          })
+        }
+        console.log("pulled content")
       }
       function shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
@@ -149,7 +174,6 @@
 					}
 				}
 				return nums
-
 			};
       const generateMap = () => {
         scenario = [
@@ -163,44 +187,58 @@
         items = shuffle(items)
         const itemSelection = items.slice(0,4)
 
+        // choose which monsters should be on the map
+        monsters = shuffle(monsters)
+        const monsterSelection = monsters.slice(0,5)
+
         // generate characters that should exist
         const characters = []
         for (let index = 0; index < 3; index++) {
+          var archetype1 = archetypes[Math.floor(Math.random() * archetypes.length)]
+          var archetype2 = archetypes[Math.floor(Math.random() * archetypes.length)]
+          var archetype = `${archetype1}, ${archetype2}`
+          if (archetype1 === archetype2) {
+            archetype = archetype1
+          }
+          var faction = factions[Math.floor(Math.random() * factions.length)]
           characters.push({
             id: idCounter++,
             name: faker.name.findName(),
-            description: `Archetypes: ${archetypes[Math.floor(Math.random() * archetypes.length)]}, ${archetypes[Math.floor(Math.random() * archetypes.length)]}\n`,
+            description: `Archetype: ${archetype}\nFaction: ${faction.name}\nFaction Description:${faction.description}`,
             type: "character",
           })
         }
 
-        // choose which entities should be on the map
-        entities = shuffle(entities)
-        const entitySelection = entities.slice(0,5)
-
-        // choose which features should be on a map
-        features = shuffle(features)
-        const featureSelection = features.slice(0,5)
-
-        const subjects = [...characters];
-        const predicates = rotate([...characters], 1);
-        for (let i = 0; i < subjects.length; i++) {
-          const subject = subjects[i]
-          const predicate = predicates[i]
-          if (subject.name === predicate.name) {
-            continue
+        for (let i = 0; i < characters.length; i++) {
+          let relationship = relationship[Math.floor(Math.random() * relationship.length)]
+          let predicate
+          if (relationship.type === "person") {
+            selection = [...Array(characters.length).keys()]
+            selection.splice(slection.indexOf(i), 1)
+            predicate = characters[selection[Math.floor(Math.random() * selection.length)]].name
+          } else if (relationship.type === "item") {
+            predicate = itemSelection[Math.floor(Math.random() * itemSelection.length)].name
+          } else if (relationship.type === "monster") {
+            predicate = monsterSelection[Math.floor(Math.random() * monsterSelection.length)].name
           }
-          const event = events[Math.floor(Math.random() * events.length)]
-          subject.description = `${subject.description}\n${subject.name} ${event} ${predicate.name}\nThey left the encounter feeling ${emotions[Math.floor(Math.random() * emotions.length)]}\n`
-          predicate.description = `${predicate.description}\n${subject.name} ${event} ${predicate.name}\nThey left the encounter feeling ${emotions[Math.floor(Math.random() * emotions.length)]}\n`
+          characters[i].description = `${characters[i].description}\nThis character ${relationship} ${predicate}`
+          characters[i].description = `${characters[i].description}\nThis character is feeling ${emotions[Math.floor(Math.random() * emotions.length)]}`
         }
 
         for (let i = 0; i < characters.length; i++) {
-          characters[i].description = `${characters[i].description}\nAs a result, they now ${reactions[Math.floor(Math.random() * reactions.length)]} someone/something.`
+          characters[i].description = `${characters[i].description}\n${experiences[Math.floor(Math.random() * experiences.length)]}`
         }
 
-        // assign characters, entities, features and items to cells
-        const content = shuffle(characters).concat(shuffle(entitySelection)).concat(shuffle(featureSelection)).concat(shuffle(itemSelection))
+        for (let i = 0; i < characters.length; i++) {
+          let companionCount = Math.floor(3 * Math.random())
+          for (let j = 0; j < companionCount; j++) {
+            companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
+            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}.They are here because ${companionMotivation}.\n`
+          }
+        }
+
+        // assign characters, monsters, and items to cells
+        const content = shuffle(characters).concat(shuffle(monsterSelection)).concat(shuffle(itemSelection))
         let positions = [0, 1, 2, 3, 4]
         positions = shuffle(positions).concat(shuffle(positions)).concat(shuffle(positions)).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
@@ -213,6 +251,8 @@
         scenarioText = ""
         for (let i = 0; i < scenario.length; i++) {
           scenarioText += `====Encounter ${i+1}====\n`
+          let location = locations[Math.floor(Math.random() * locations.length)]
+                scenarioText += `Location: ${location.name}\n${location.description}`
           for (let content of scenario[i]) {
             scenarioText += `${content.name.toUpperCase()}\n`
             scenarioText += `${content.description}\n`
