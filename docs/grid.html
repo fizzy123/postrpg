@@ -215,7 +215,7 @@
           let predicate
           if (relationship.type === "person") {
             selection = [...Array(characters.length).keys()]
-            selection.splice(slection.indexOf(i), 1)
+            selection.splice(selection.indexOf(i), 1)
             predicate = characters[selection[Math.floor(Math.random() * selection.length)]].name
           } else if (relationship.type === "item") {
             predicate = itemSelection[Math.floor(Math.random() * itemSelection.length)].name
