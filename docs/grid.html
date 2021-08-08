@@ -96,7 +96,7 @@
             experiences.push(row["gsx$experiences"]["$t"])
           }
           if (row["gsx$companionmotivation"]["$t"]) {
-            companionMotivation.push(row["gsx$companionmotivation"]["$t"])
+            companionMotivations.push(row["gsx$companionmotivation"]["$t"])
           }
         }
         // parse monster sheet
@@ -233,7 +233,7 @@
         for (let i = 0; i < characters.length; i++) {
           let companionCount = Math.floor(3 * Math.random())
           for (let j = 0; j < companionCount; j++) {
-            companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
+            let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
             characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}.They are here because ${companionMotivation}.\n`
           }
         }
