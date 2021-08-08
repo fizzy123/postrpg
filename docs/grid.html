@@ -74,7 +74,9 @@ function randomChoice(array) {
   }
 }
       let relationships = []
+      let peopleRelationships = []
       let emotions = []
+      let skills = []
       let archetypes = []
       let factions = []
       let locations = []
@@ -100,6 +102,10 @@ function randomChoice(array) {
         for (const row of response.data.feed.entry) {
           if (row["gsx$persontopersonrel"]["$t"]) {
             relationships.push({
+              name: row["gsx$persontopersonrel"]["$t"],
+              type: "person",
+            })
+            peopleRelationships.push({
               name: row["gsx$persontopersonrel"]["$t"],
               type: "person",
             })
@@ -133,6 +139,15 @@ function randomChoice(array) {
           }
         }
 
+        // parse skill sheet
+        sheetIndex = 5
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          skills.push({
+            name: row["gsx$name"]["$t"],
+            weight: parseInt(row["gsx$weight"]["$t"]),
+          })
+        }
         // parse archetypes sheet
         sheetIndex = 6
         response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
@@ -255,6 +270,10 @@ function randomChoice(array) {
         }
 
         for (let i = 0; i < characters.length; i++) {
+          characters[i].description = `${characters[i].description}\n${randomChoice(skills).name}`
+          characters[i].description = `${characters[i].description}\n${experiences[Math.floor(Math.random() * experiences.length)]}`
+          characters[i].description = `${characters[i].description}\nThis character is feeling ${randomChoice(emotions)} and ${randomChoice(emotions)}`
+
           let relationship = relationships[Math.floor(Math.random() * relationships.length)]
           let predicate
           if (relationship.type === "person") {
@@ -266,17 +285,15 @@ function randomChoice(array) {
           } else if (relationship.type === "monster") {
             predicate = monsterSelection[Math.floor(Math.random() * monsterSelection.length)].name
           }
-          characters[i].description = `${characters[i].description}\n${experiences[Math.floor(Math.random() * experiences.length)]}`
-          characters[i].description = `${characters[i].description}\nThis character is feeling ${emotions[Math.floor(Math.random() * emotions.length)]}`
-          characters[i].description = `${characters[i].description}\nThis character ${relationship.name} ${predicate}`
-        }
 
-        for (let i = 0; i < characters.length; i++) {
-          let companionCount = Math.floor(3 * Math.random())
-          for (let j = 0; j < companionCount; j++) {
-            let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
-            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, ${randomChoice(archetypes).name}. They are here because ${companionMotivation}.`
-          }
+          characters[i].description = `${characters[i].description}\nThis character ${relationship.name} ${predicate}`
+
+          # add additional desire that is specific to a person
+          let personRelationship = peopleRelationships[Math.floor(Math.random() * peopleRelationships.length)]
+          selection = [...Array(characters.length).keys()]
+          selection.splice(selection.indexOf(i), 1)
+          predicate = characters[selection[Math.floor(Math.random() * selection.length)]].name
+          characters[i].description = `${characters[i].description}\nThis character ${personRelationship.name} ${predicate}`
         }
 
         // assign characters, monsters, and items to cells
