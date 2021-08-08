@@ -139,7 +139,7 @@ function randomChoice(array) {
         }
 
         // parse experiences sheet
-        sheetIndex = 5
+        sheetIndex = 4
         response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
         for (const row of response.data.feed.entry) {
           experiences.push({
