@@ -86,6 +86,7 @@ function randomChoice(array) {
       let items = []
       let companionMotivations = []
       let experiences = []
+      let playerExperiences = []
       let scenario = [
           [],
           [],
@@ -131,14 +132,27 @@ function randomChoice(array) {
           if (row["gsx$reactions"]["$t"]) {
             reactions.push(row["gsx$reactions"]["$t"])
           }
-          if (row["gsx$experiences"]["$t"]) {
-            experiences.push(row["gsx$experiences"]["$t"])
-          }
+
           if (row["gsx$companionmotivation"]["$t"]) {
             companionMotivations.push(row["gsx$companionmotivation"]["$t"])
           }
         }
 
+        // parse experiences sheet
+        sheetIndex = 5
+        response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
+        for (const row of response.data.feed.entry) {
+          experiences.push({
+            name: row["gsx$name"]["$t"],
+            weight: parseInt(row["gsx$weight"]["$t"]),
+          })
+          if (row["gsx$playerapplicable"]["$t"] === "y") {
+            playerExperiences.push({
+              name: row["gsx$name"]["$t"],
+              weight: parseInt(row["gsx$weight"]["$t"]),
+            })
+          }
+        }
         // parse skill sheet
         sheetIndex = 5
         response = await axios.get(`https://spreadsheets.google.com/feeds/list/1NXj5-cpQ7Cnn3fB-lKoRFCjJ0GTC34AULyHQF4zYek0/${sheetIndex}/public/values?alt=json`);
@@ -188,6 +202,7 @@ function randomChoice(array) {
             id: idCounter++,
             name: row["gsx$name"]["$t"],
             description: row["gsx$description"]["$t"],
+            weight: row["gsx$weight"]["$t"],
             type: "locations",
           })
         }
@@ -249,7 +264,7 @@ function randomChoice(array) {
 
         // choose which monsters should be on the map
         monsters = shuffle(monsters)
-        const monsterSelection = monsters.slice(0,3)
+        const monsterSelection = monsters.slice(0,1)
 
         // generate characters that should exist
         const characters = []
@@ -270,8 +285,8 @@ function randomChoice(array) {
         }
 
         for (let i = 0; i < characters.length; i++) {
-          characters[i].description = `${characters[i].description}\n${randomChoice(skills).name}`
-          characters[i].description = `${characters[i].description}\n${experiences[Math.floor(Math.random() * experiences.length)]}`
+          characters[i].description = `${characters[i].description}\nSkill: ${randomChoice(skills).name}`
+          characters[i].description = `${characters[i].description}\n${randomChoice(experiences).name}`
           characters[i].description = `${characters[i].description}\nThis character is feeling ${randomChoice(emotions)} and ${randomChoice(emotions)}`
 
           let relationship = relationships[Math.floor(Math.random() * relationships.length)]
@@ -297,15 +312,13 @@ function randomChoice(array) {
         }
 
         // assign characters, monsters, and items to cells
-        const content = shuffle(monsterSelection).concat(shuffle(itemSelection))
+        const content = shuffle(monsterSelection).concat(shuffle(itemSelection)).concat(characters.slicec(1))
         let positions = [0, 1, 2, 3, 4]
         positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
           scenario[positions[i]].push(content[i])
         }
-        scenario[0].push(characters[0])
-        scenario[4].push(characters[1])
-        scenario[Math.floor(1 + 3 * Math.random())].push(characters[2])
+        scenario[4].push(characters[0])
         printScenario(scenario)
       }
 
@@ -313,8 +326,12 @@ function randomChoice(array) {
         scenarioText = ""
         for (let i = 0; i < scenario.length; i++) {
           scenarioText += `====Encounter ${i+1}====\n`
-          let location = locations[Math.floor(Math.random() * locations.length)]
+          let location = random(locations)
           scenarioText += `Location: ${location.name}\n${location.description}\n\n`
+          if (i === 0) {
+                  scenarioText += `Player Experience: ${randomChoice(playerExperience).name.replace("his person", "his party")}\n\n`
+          }
+
           for (let content of scenario[i]) {
             scenarioText += `${content.name.toUpperCase()}\n`
             scenarioText += `${content.description}\n`
