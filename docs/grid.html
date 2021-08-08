@@ -312,7 +312,7 @@ function randomChoice(array) {
         }
 
         // assign characters, monsters, and items to cells
-        const content = shuffle(monsterSelection).concat(shuffle(itemSelection)).concat(characters.slicec(1))
+        const content = shuffle(monsterSelection).concat(shuffle(itemSelection)).concat(characters.slice(1))
         let positions = [0, 1, 2, 3, 4]
         positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
