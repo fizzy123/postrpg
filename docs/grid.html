@@ -326,7 +326,7 @@ function randomChoice(array) {
         scenarioText = ""
         for (let i = 0; i < scenario.length; i++) {
           scenarioText += `====Encounter ${i+1}====\n`
-          let location = random(locations)
+          let location = randomChoice(locations)
           scenarioText += `Location: ${location.name}\n${location.description}\n\n`
           if (i === 0) {
                   scenarioText += `Player Experience: ${randomChoice(playerExperience).name.replace("his person", "his party")}\n\n`
