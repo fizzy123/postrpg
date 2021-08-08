@@ -53,7 +53,8 @@ function randomChoice(array) {
 
     // Total in hand, we can now pick a random value akin to our
     // random index from before.
-    const threshold = Math.floor(Math.random() * total);
+    const threshold = Math.random() * total;
+    console.log(threshold);
 
     // Now we just need to loop through the main data one more time
     // until we discover which value would live within this
