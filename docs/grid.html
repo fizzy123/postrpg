@@ -205,7 +205,7 @@
           characters.push({
             id: idCounter++,
             name: faker.name.findName(),
-            description: `Archetype: ${archetype}\nFaction: ${faction.name}\nFaction Description:${faction.description}`,
+            description: `Archetype: ${archetype}\nFaction: ${faction.name}\nFaction Description: ${faction.description}`,
             type: "character",
           })
         }
@@ -222,19 +222,16 @@
           } else if (relationship.type === "monster") {
             predicate = monsterSelection[Math.floor(Math.random() * monsterSelection.length)].name
           }
-          characters[i].description = `${characters[i].description}\nThis character ${relationship} ${predicate}`
-          characters[i].description = `${characters[i].description}\nThis character is feeling ${emotions[Math.floor(Math.random() * emotions.length)]}`
-        }
-
-        for (let i = 0; i < characters.length; i++) {
           characters[i].description = `${characters[i].description}\n${experiences[Math.floor(Math.random() * experiences.length)]}`
+          characters[i].description = `${characters[i].description}\nThis character is feeling ${emotions[Math.floor(Math.random() * emotions.length)]}`
+          characters[i].description = `${characters[i].description}\nThis character ${relationship.name} ${predicate}`
         }
 
         for (let i = 0; i < characters.length; i++) {
           let companionCount = Math.floor(3 * Math.random())
           for (let j = 0; j < companionCount; j++) {
             let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
-            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}.They are here because ${companionMotivation}.\n`
+            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}. They are here because ${companionMotivation}.`
           }
         }
 
@@ -253,7 +250,7 @@
         for (let i = 0; i < scenario.length; i++) {
           scenarioText += `====Encounter ${i+1}====\n`
           let location = locations[Math.floor(Math.random() * locations.length)]
-                scenarioText += `Location: ${location.name}\n${location.description}`
+          scenarioText += `Location: ${location.name}\n${location.description}\n`
           for (let content of scenario[i]) {
             scenarioText += `${content.name.toUpperCase()}\n`
             scenarioText += `${content.description}\n`
