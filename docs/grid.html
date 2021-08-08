@@ -211,7 +211,7 @@
         }
 
         for (let i = 0; i < characters.length; i++) {
-          let relationship = relationship[Math.floor(Math.random() * relationship.length)]
+          let relationship = relationships[Math.floor(Math.random() * relationships.length)]
           let predicate
           if (relationship.type === "person") {
             selection = [...Array(characters.length).keys()]
