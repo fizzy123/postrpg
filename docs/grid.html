@@ -63,7 +63,7 @@ function randomChoice(array) {
     total = 0;
     for (var i = 0; i < array.length; ++i) {
       // Add the weight to our running total.
-      total += array[i].weight;
+      total += parseInt(array[i].weight);
 
       // If this value falls within the threshold, we're done!
       if (total >= threshold) {
@@ -139,7 +139,7 @@ function randomChoice(array) {
         for (const row of response.data.feed.entry) {
           archetypes.push({
             name: row["gsx$name"]["$t"],
-            weight: row["gsx$weight"]["$t"],
+            weight: parseInt(row["gsx$weight"]["$t"]),
           })
         }
         // parse monster sheet
@@ -185,7 +185,7 @@ function randomChoice(array) {
             name: row["gsx$name"]["$t"],
             description: row["gsx$description"]["$t"],
             type: "factions",
-            weight: row["gsx$weight"]["$t"],
+            weight: parseInt(row["gsx$weight"]["$t"]),
           })
         }
         console.log("pulled content")
