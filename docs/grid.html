@@ -239,8 +239,8 @@ function randomChoice(array) {
         // generate characters that should exist
         const characters = []
         for (let index = 0; index < 3; index++) {
-          var archetype1 = randomChoice(archetypes)
-          var archetype2 = randomChoice(archetypes)
+          var archetype1 = randomChoice(archetypes).name
+          var archetype2 = randomChoice(archetypes).name
           var archetype = `${archetype1}, ${archetype2}`
           if (archetype1 === archetype2) {
             archetype = archetype1
@@ -275,7 +275,7 @@ function randomChoice(array) {
           let companionCount = Math.floor(3 * Math.random())
           for (let j = 0; j < companionCount; j++) {
             let companionMotivation = companionMotivations[Math.floor(Math.random() * companionMotivations.length)]
-            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, an ${randomChoice(archetypes)}. They are here because ${companionMotivation}.`
+            characters[i].description = `${characters[i].description}\nThis character is here with ${faker.name.findName()}, an ${randomChoice(archetypes).name}. They are here because ${companionMotivation}.`
           }
         }
 
