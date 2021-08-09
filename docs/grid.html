@@ -312,13 +312,15 @@ function randomChoice(array) {
         }
 
         // assign characters, monsters, and items to cells
-        const content = shuffle(monsterSelection).concat(shuffle(itemSelection)).concat(characters.slice(1))
+        const content = shuffle(monsterSelection).concat(shuffle(itemSelection))
         let positions = [0, 1, 2, 3, 4]
         positions = shuffle(positions).concat(shuffle(positions))
         for (let i = 0; i < content.length; i++) {
           scenario[positions[i]].push(content[i])
         }
         scenario[4].push(characters[0])
+        scenario[0].push(characters[1])
+        scenario[Math.floor(Math.random() * 3) + 1].push(characters[2])
         printScenario(scenario)
       }
 
