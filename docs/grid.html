@@ -347,9 +347,11 @@ function randomChoice(array) {
 
       const init = async () => {
         $(".generate-button").click(generateMap)
+        $(".sccenario").change(function() {
+          window.localStorage.scenario = scenarioText
+        })
         await establishCorpus()
-        //if (!window.localStorage.scenario) {
-        if (true) {
+        if (!window.localStorage.scenario) {
           generateMap()
         } else {
           scenarioText = window.localStorage.scenario
