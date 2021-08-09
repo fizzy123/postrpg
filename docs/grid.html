@@ -348,7 +348,8 @@ function randomChoice(array) {
       const init = async () => {
         $(".generate-button").click(generateMap)
         $(".sccenario").change(function() {
-          window.localStorage.scenario = scenarioText
+          console.log("saved")
+          window.localStorage.scenario = $(".scenario").text()
         })
         await establishCorpus()
         if (!window.localStorage.scenario) {
