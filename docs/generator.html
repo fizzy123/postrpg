@@ -91,37 +91,37 @@
         let majorDimension
 
         // parse stories sheet
-        let sheetName = "stories"
+        sheetName = "stories"
         majorDimension = "rows"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         stories = response.data.values.slice(1)
 
         // parse filler sheet
-        let sheetName = "filler"
+        sheetName = "filler"
         majorDimension = "columns"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         filler = response.data.values.slice(1)
 
         // parse monster sheet
-        let sheetName = "monsters"
+        sheetName = "monsters"
         majorDimension = "rows"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         monsters = response.data.values.slice(1)
 
         // parse item sheet
-        let sheetName = "items"
+        sheetName = "items"
         majorDimension = "rows"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         items = response.data.values.slice(1)
 
         // parse effects sheet
-        let sheetName = "corpuses"
+        sheetName = "corpuses"
         majorDimension = "columns"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         effects = response.data.values[10].slice(1)
 
         // parse archetypes sheet
-        let sheetName = "corpuses"
+        sheetName = "corpuses"
         majorDimension = "columns"
         let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         archetypes = response.data.values[5].slice(1)
