@@ -89,41 +89,42 @@
         let apiKey = "AIzaSyAEsqL4XsCqz_JSa_LLZTiZkfH_qTNpeZM"
         let sheetName
         let majorDimension
+        let response
 
         // parse stories sheet
         sheetName = "stories"
         majorDimension = "rows"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         stories = response.data.values.slice(1)
 
         // parse filler sheet
         sheetName = "filler"
         majorDimension = "columns"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         filler = response.data.values.slice(1)
 
         // parse monster sheet
         sheetName = "monsters"
         majorDimension = "rows"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         monsters = response.data.values.slice(1)
 
         // parse item sheet
         sheetName = "items"
         majorDimension = "rows"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         items = response.data.values.slice(1)
 
         // parse effects sheet
         sheetName = "corpuses"
         majorDimension = "columns"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         effects = response.data.values[10].slice(1)
 
         // parse archetypes sheet
         sheetName = "corpuses"
         majorDimension = "columns"
-        let response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
+        response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}&majorDimension=${majorDimension}`);
         archetypes = response.data.values[5].slice(1)
       }
 
